@@ -24,8 +24,10 @@ const initializeValues = function () {
 
 for (let i = 0; i < btns.length; i++) {
   btns[i].addEventListener('click', function () {
-    input += btns[i].value;
-    inputEl.value = input;
+    if (input.length < 15) {
+      input += btns[i].value;
+      inputEl.value = input;
+    }
   });
 }
 
