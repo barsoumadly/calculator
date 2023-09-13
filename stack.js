@@ -39,20 +39,97 @@ export class Stack {
     }
     return this;
   }
+
+  isEmpty() {
+    if (this.#head === null) {
+      return true;
+    }
+    return false;
+  }
+
+  top() {
+    if (!this.isEmpty()) {
+      return this.#head.data;
+    } else {
+      return null;
+    }
+  }
 }
 
-export const isOperand = function (char) {
+const isOperand = function (char) {
   if (char === '*' || char === '/' || char === '+' || char === '-') {
     return 0;
   }
   return 1;
 };
 
-export const precedenceChecker = function (char) {
+const precedenceChecker = function (char) {
   if (char === '+' || char === '-') {
     return 1;
   } else if (char === '*' || char === '/') {
     return 2;
   }
   return 0;
+};
+
+export const convertInfixToPostfix = function (infixExpression) {
+  const stack = new Stack();
+  let postfixResult = '';
+  let i = 0;
+  while (i < infixExpression.length) {
+    const character = infixExpression.charAt(i);
+    if (isOperand(character)) {
+      postfixResult += character;
+      i++;
+    } else {
+      if (precedenceChecker(character) > precedenceChecker(stack.top())) {
+        stack.push(character);
+        i++;
+      } else {
+        postfixResult += stack.top();
+        stack.pop();
+      }
+    }
+  }
+  while (!stack.isEmpty()) {
+    postfixResult += stack.top();
+    stack.pop();
+  }
+  return postfixResult;
+};
+
+const calc = function (stack, num1, num2, operator) {
+  switch (operator) {
+    case '+':
+      stack.push(num1 + num2);
+      break;
+    case '-':
+      stack.push(num1 - num2);
+      break;
+    case '*':
+      stack.push(num1 * num2);
+      break;
+    case '/':
+      stack.push(num1 / num2);
+      break;
+  }
+};
+
+export const evaluatePostfix = function (postfixExperssion) {
+  const stack = new Stack();
+  let num1 = 0;
+  let num2 = 0;
+  for (let i = 0; i < postfixExperssion.length; i++) {
+    const char = postfixExperssion.charAt(i);
+    if (isOperand(char)) {
+      stack.push(Number.parseFloat(char));
+    } else {
+      num2 = stack.top();
+      stack.pop();
+      num1 = stack.top();
+      stack.pop();
+      calc(stack, num1, num2, char);
+    }
+  }
+  return stack.top().toFixed(1);
 };
