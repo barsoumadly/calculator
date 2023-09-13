@@ -1,5 +1,7 @@
 'use strict';
 
+import { Stack, isOperand, precedenceChecker } from './stack.js';
+
 // Selecting elements
 const inputEl = document.getElementById('input');
 
