@@ -57,7 +57,13 @@ export class Stack {
 }
 
 const isOperand = function (char) {
-  if (char === '*' || char === '/' || char === '+' || char === '-') {
+  if (
+    char === '*' ||
+    char === '/' ||
+    char === '+' ||
+    char === '-' ||
+    char === '#'
+  ) {
     return 0;
   }
   return 1;
@@ -75,22 +81,32 @@ const precedenceChecker = function (char) {
 export const convertInfixToPostfix = function (infixExpression) {
   const stack = new Stack();
   let postfixResult = '';
+  let temp = '';
   let i = 0;
   while (i < infixExpression.length) {
     const character = infixExpression.charAt(i);
     if (isOperand(character)) {
-      postfixResult += character;
+      temp += character;
       i++;
     } else {
       if (precedenceChecker(character) > precedenceChecker(stack.top())) {
         stack.push(character);
+        if (temp !== '') {
+          postfixResult += temp + '#';
+          temp = '';
+        }
         i++;
       } else {
+        if (temp !== '') {
+          postfixResult += temp += '#';
+          temp = '';
+        }
         postfixResult += stack.top();
         stack.pop();
       }
     }
   }
+  postfixResult += temp += '#';
   while (!stack.isEmpty()) {
     postfixResult += stack.top();
     stack.pop();
@@ -119,10 +135,14 @@ export const evaluatePostfix = function (postfixExperssion) {
   const stack = new Stack();
   let num1 = 0;
   let num2 = 0;
+  let temp = '';
   for (let i = 0; i < postfixExperssion.length; i++) {
     const char = postfixExperssion.charAt(i);
     if (isOperand(char)) {
-      stack.push(Number.parseFloat(char));
+      temp += char;
+    } else if (char === '#') {
+      stack.push(Number.parseFloat(temp));
+      temp = '';
     } else {
       num2 = stack.top();
       stack.pop();

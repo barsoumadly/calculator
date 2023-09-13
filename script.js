@@ -2,6 +2,8 @@
 
 import { convertInfixToPostfix, evaluatePostfix } from './stack.js';
 
+console.log(convertInfixToPostfix('12+5*4-22/2'));
+
 // Selecting elements
 const inputEl = document.getElementById('input');
 
