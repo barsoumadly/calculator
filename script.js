@@ -2,7 +2,7 @@
 
 import { convertInfixToPostfix, evaluatePostfix } from './stack.js';
 
-console.log(convertInfixToPostfix('12+5*4-22/2'));
+// console.log(convertInfixToPostfix('12+5*4-22/2'));
 
 // Selecting elements
 const inputEl = document.getElementById('input');
@@ -29,8 +29,8 @@ const initializeValues = function () {
 for (let i = 0; i < btns.length; i++) {
   btns[i].addEventListener('click', function () {
     if (input.length < 15) {
-      input += btns[i].value;
-      inputEl.value = input;
+      input = btns[i].value;
+      inputEl.value += input;
     }
   });
 }
@@ -52,7 +52,7 @@ for (let i = 0; i < btns.length; i++) {
 //   }
 // };
 
-btnEqual.addEventListener('click', function () {
+const evaluateResult = function () {
   // let num = '';
   // for (let i = 0; i < input.length; i++) {
   //   if (
@@ -74,19 +74,74 @@ btnEqual.addEventListener('click', function () {
   result = evaluatePostfix(postfixValue);
   inputEl.value = result;
   initializeValues();
+};
+
+// evalaute result
+btnEqual.addEventListener('click', evaluateResult);
+document.addEventListener('keydown', function (event) {
+  if (event.key === 'Enter') {
+    evaluateResult();
+  }
 });
 
-btnClear.addEventListener('click', function () {
+const clear = function () {
   inputEl.value = '';
   initializeValues();
+};
+
+// clear the input field
+btnClear.addEventListener('click', clear);
+document.addEventListener('keydown', function (event) {
+  if (event.key === 'Escape') {
+    clear();
+  }
 });
 
-btnErase.addEventListener('click', function () {
-  input = input.substring(0, input.length - 1);
+const earse = function () {
+  input = inputEl.value.substring(0, inputEl.value.length - 1);
   inputEl.value = input;
+};
+
+// earse character
+btnErase.addEventListener('click', earse);
+document.addEventListener('keydown', function (event) {
+  if (event.key === 'Backspace') {
+    earse();
+  }
 });
 
-btnResult.addEventListener('click', function () {
+const showResult = function () {
   input += result.toString();
   inputEl.value = input;
+};
+
+btnResult.addEventListener('click', showResult);
+document.addEventListener('keydown', function (event) {
+  if (event.key === 'ArrowUp') {
+    showResult();
+  }
+});
+
+const isOperator = function (char) {
+  if (
+    char === '*' ||
+    char === '/' ||
+    char === '+' ||
+    char === '-' ||
+    char === '.'
+  ) {
+    return 1;
+  }
+  return 0;
+};
+
+// type using keyboard
+document.addEventListener('keydown', function (event) {
+  if (
+    Number.parseFloat(event.key) ||
+    isOperator(event.key) ||
+    event.key === '0'
+  ) {
+    inputEl.value += event.key;
+  }
 });
